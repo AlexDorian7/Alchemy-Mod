@@ -1,25 +1,18 @@
 plugins {
-    id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'com.github.johnrengelman.shadow'
 }
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
 }
 
 loom {
-    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
     mixin {
+        useLegacyMixinAp = true
         defaultRefmapName.set("${mod_id}.refmap.json")
     }
+
     runs {
         client {
             client()
@@ -27,6 +20,7 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/client')
         }
+
         server {
             server()
             setConfigName('Fabric Server')
@@ -34,4 +28,68 @@ loom {
             runDir('runs/server')
         }
     }
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+
+    shadowCommon {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+
+    compileClasspath.extendsFrom(common)
+    runtimeClasspath.extendsFrom(common)
+
+    developmentFabric.extendsFrom(common)
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation "dev.architectury:architectury-fabric:${architectury_api_version}"
+
+    // Shared code during development.
+    common(project(path: ':common', configuration: 'namedElements')) {
+        transitive = false
+    }
+
+    // Transformed shared code for the production jar.
+    shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) {
+        transitive = false
+    }
+}
+
+processResources {
+    inputs.properties([
+            version: project.version,
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_author: mod_author,
+            description: description,
+            license: license,
+            minecraft_version: minecraft_version,
+            java_version: java_version,
+            fabric_loader_version: fabric_loader_version
+    ])
+
+    filesMatching('fabric.mod.json') {
+        expand(project.properties)
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set(shadowJar.archiveFile)
+}
+
+jar {
+    archiveClassifier = 'dev'
 }

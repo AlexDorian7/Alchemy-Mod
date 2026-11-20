@@ -16,7 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "studios.versel.alchemy.fabric.Alchemy"
+        ],
+        "client" : [
+            "studios.versel.alchemy.fabric.client.AlchemyClient"
         ]
     },
     "mixins": [
@@ -26,6 +29,7 @@
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
+        "architectury": ">=13.0.12",
         "minecraft": "${minecraft_version}",
         "java": ">=${java_version}"
     },
