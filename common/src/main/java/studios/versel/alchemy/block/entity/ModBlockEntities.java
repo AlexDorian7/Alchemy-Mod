@@ -6,6 +6,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import studios.versel.alchemy.Constants;
+import studios.versel.alchemy.block.FoundryPort;
 import studios.versel.alchemy.block.ModBlocks;
 
 public final class ModBlockEntities {
@@ -28,6 +29,24 @@ public final class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             AlchemyTableEntity::new,
                             ModBlocks.ALCHEMY_TABLE.get()
+                    ).build(null)
+            );
+
+    public static final RegistrySupplier<BlockEntityType<FoundryBlockEntity>> FOUNDRY =
+            BLOCK_ENTITIES.register(
+                    "foundry",
+                    () -> BlockEntityType.Builder.of(
+                            FoundryBlockEntity::new,
+                            ModBlocks.FOUNDRY.get()
+                    ).build(null)
+            );
+
+    public static final RegistrySupplier<BlockEntityType<FoundryPortEntity>> FOUNDRY_PORT =
+            BLOCK_ENTITIES.register(
+                    "foundry_port",
+                    () -> BlockEntityType.Builder.of(
+                            FoundryPortEntity::new,
+                            ModBlocks.FOUNDRY_PORT.get()
                     ).build(null)
             );
 

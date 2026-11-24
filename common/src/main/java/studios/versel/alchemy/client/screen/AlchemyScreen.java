@@ -62,12 +62,6 @@ public class AlchemyScreen extends AbstractContainerScreen<AlchemyMenu> {
     ) {
         long amount = menu.getFluidAmount(port);
         long capacity = menu.getCapacity(port);
-        System.out.println(
-                "Port " + port +
-                        " | Fluid: " + menu.getFluid(port) +
-                        " | Amount: " + amount +
-                        " | Capacity: " + capacity
-        );
 
         // Tank background.
         graphics.fill(

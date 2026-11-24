@@ -1,0 +1,5 @@
+{
+    "type": "minecraft:blasting",
+    "ingredient": { "item": "alchemy:raw_mithril" },
+    "result": { "item": "alchemy:mithril_ingot", "count": 1 }
+}

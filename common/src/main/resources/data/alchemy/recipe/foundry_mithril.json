@@ -1,0 +1,9 @@
+{
+  "type": "alchemy:foundry",
+  "input": "alchemy:foundry/foundry_mithril",
+  "output": {
+    "fluid": "alchemy:molten_mithril",
+    "amount": 1000
+  },
+  "processing_time": 200
+}

@@ -5,11 +5,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.Optional;
+
 public class FluidTank {
     private final long capacity;
+    private final Optional<Runnable> changed;
     private FluidStack fluid = FluidStack.empty();
 
-    public FluidTank(long capacity) {
+    public FluidTank(long capacity, Optional<Runnable> changed) {
+        this.changed = changed;
         if (capacity <= 0) {
             throw new IllegalArgumentException("Capacity must be positive");
         }
@@ -57,8 +61,9 @@ public class FluidTank {
             } else {
                 fluid.grow(accepted);
             }
-        }
 
+            onChanged();
+        }
         return accepted;
     }
 
@@ -76,6 +81,8 @@ public class FluidTank {
             if (fluid.isEmpty()) {
                 fluid = FluidStack.empty();
             }
+
+            onChanged();
         }
 
         return result;
@@ -84,6 +91,7 @@ public class FluidTank {
     public void setFluid(FluidStack fluid) {
         if (fluid.isEmpty()) {
             this.fluid = FluidStack.empty();
+            onChanged();
             return;
         }
 
@@ -92,6 +100,7 @@ public class FluidTank {
         }
 
         this.fluid = fluid.copy();
+        onChanged();
     }
 
     public void writeNbt(HolderLookup.Provider provider, CompoundTag tag) {
@@ -113,5 +122,9 @@ public class FluidTank {
         if (fluid.getAmount() > capacity) {
             fluid = fluid.copyWithAmount(capacity);
         }
+    }
+
+    private void onChanged() {
+        changed.ifPresent(Runnable::run);
     }
 }

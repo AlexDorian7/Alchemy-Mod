@@ -14,6 +14,11 @@ public class FluidSpriteHelper {
     }
 
     @ExpectPlatform
+    public static TextureAtlasSprite getFlowSprite(Fluid fluid) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static int getTintColor(Fluid fluid, BlockAndTintGetter level, BlockPos pos) {
         throw new AssertionError();
     }

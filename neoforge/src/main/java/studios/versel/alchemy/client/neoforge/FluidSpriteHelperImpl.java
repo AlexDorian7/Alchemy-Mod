@@ -29,6 +29,23 @@ public class FluidSpriteHelperImpl {
                 .apply(texture);
     }
 
+    public static TextureAtlasSprite getFlowSprite(Fluid fluid) {
+        if (fluid == null || fluid == Fluids.EMPTY) {
+            return null;
+        }
+
+        ResourceLocation texture =
+                IClientFluidTypeExtensions.of(fluid).getFlowingTexture();
+
+        if (texture == null) {
+            return null;
+        }
+
+        return Minecraft.getInstance()
+                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(texture);
+    }
+
     public static int getTintColor(
             Fluid fluid,
             BlockAndTintGetter level,

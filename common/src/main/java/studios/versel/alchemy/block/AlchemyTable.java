@@ -25,8 +25,9 @@ import studios.versel.alchemy.block.entity.AlchemyTableEntity;
 import studios.versel.alchemy.block.states.ModBlockProperties;
 import studios.versel.alchemy.menu.AlchemyMenu;
 import studios.versel.alchemy.multiblock.AlchemyStructure;
+import studios.versel.alchemy.multiblock.MultiblockManager;
 
-public class AlchemyTable extends BaseEntityBlock {
+public class AlchemyTable extends VisibleMultiblockEntityBlock {
 
     public static final MapCodec<AlchemyTable> CODEC = simpleCodec(AlchemyTable::new);
 
@@ -45,7 +46,8 @@ public class AlchemyTable extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(ModBlockProperties.COMPLETED, HorizontalDirectionalBlock.FACING);
+        super.createBlockStateDefinition(builder);
+        builder.add(HorizontalDirectionalBlock.FACING);
     }
 
     @Nullable
@@ -57,51 +59,16 @@ public class AlchemyTable extends BaseEntityBlock {
     }
 
     @Override
-    public void onPlace(
+    protected void onMultiblockRemoved(
             BlockState state,
             Level level,
-            BlockPos pos,
-            BlockState oldState,
-            boolean movedByPiston
+            BlockPos pos
     ) {
-        super.onPlace(state, level, pos, oldState, movedByPiston);
-
-        if (!oldState.is(this)) {
-            AlchemyStructure.updateAround(level, pos);
-        }
-    }
-
-    @Override
-    protected void neighborChanged(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Block neighborBlock,
-            BlockPos neighborPos,
-            boolean movedByPiston
-    ) {
-        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-
-        AlchemyStructure.updateAround(level, pos);
-    }
-
-    @Override
-    public void onRemove(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            BlockState newState,
-            boolean movedByPiston
-    ) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
-
-        if (!newState.is(this)) {
-            AlchemyStructure.updateAround(
-                    level,
-                    pos,
-                    state.getValue(HorizontalDirectionalBlock.FACING)
-            );
-        }
+        MultiblockManager.updateAround(
+                level,
+                pos,
+                state.getValue(HorizontalDirectionalBlock.FACING)
+        );
     }
 
     @Nullable

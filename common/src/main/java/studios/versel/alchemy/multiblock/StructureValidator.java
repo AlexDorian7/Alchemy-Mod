@@ -3,10 +3,13 @@ package studios.versel.alchemy.multiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import studios.versel.alchemy.Constants;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public final class StructureValidator {
 
@@ -31,23 +34,35 @@ public final class StructureValidator {
             return false;
         }
 
-        for (Map.Entry<BlockPos, Set<net.minecraft.world.level.block.Block>> entry
-                : definition.getBlocks().entrySet()) {
-
+        for (Map.Entry<BlockPos, Set<Supplier<Block>>> entry : definition.getBlocks().entrySet()) {
             BlockPos localPos = entry.getKey();
             BlockPos worldPos = toWorldPos(origin, localPos, facing);
 
             BlockState state = level.getBlockState(worldPos);
 
-            // Optional positions are allowed to be empty.
             if (definition.isOptional(localPos) && state.isAir()) {
                 continue;
             }
 
             if (!definition.matches(localPos, state)) {
+                Constants.LOG.debug(
+                        "Structure validation failed!"
+                                + " Origin: " + origin
+                                + " Facing: " + facing
+                                + " Local position: " + localPos
+                                + " World position: " + worldPos
+                                + " Expected: " + entry.getValue()
+                                + " Actual: " + state
+                );
+
                 return false;
             }
         }
+
+        Constants.LOG.debug(
+                "[Alchemy] Structure validated! Origin: "
+                        + origin + " Facing: " + facing
+        );
 
         return true;
     }

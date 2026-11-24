@@ -5,17 +5,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public final class StructureDefinition {
 
-    private final Map<BlockPos, Set<Block>> blocks;
+    private final Map<BlockPos, Set<Supplier<Block>>> blocks;
     private final Set<BlockPos> optionalPositions;
 
     private StructureDefinition(
-            Map<BlockPos, Set<Block>> blocks,
+            Map<BlockPos, Set<Supplier<Block>>> blocks,
             Set<BlockPos> optionalPositions
     ) {
-        Map<BlockPos, Set<Block>> immutableBlocks = new LinkedHashMap<>();
+        Map<BlockPos, Set<Supplier<Block>>> immutableBlocks = new LinkedHashMap<>();
 
         blocks.forEach((pos, allowedBlocks) ->
                 immutableBlocks.put(
@@ -31,14 +32,14 @@ public final class StructureDefinition {
     /**
      * Gets all required and optional block positions.
      */
-    public Map<BlockPos, Set<Block>> getBlocks() {
+    public Map<BlockPos, Set<Supplier<Block>>> getBlocks() {
         return blocks;
     }
 
     /**
      * Gets the allowed blocks at a relative position.
      */
-    public Set<Block> getAllowedBlocks(BlockPos pos) {
+    public Set<Supplier<Block>> getAllowedBlocks(BlockPos pos) {
         return blocks.getOrDefault(pos, Set.of());
     }
 
@@ -74,13 +75,13 @@ public final class StructureDefinition {
      * Checks whether a block state is accepted at a position.
      */
     public boolean matches(BlockPos pos, BlockState state) {
-        Set<Block> allowedBlocks = blocks.get(pos);
+        Set<Supplier<Block>> allowedBlocks = blocks.get(pos);
 
         if (allowedBlocks == null) {
             return false;
         }
 
-        return allowedBlocks.stream().anyMatch(state::is);
+        return allowedBlocks.stream().anyMatch(supplier -> state.is(supplier.get()));
     }
 
     public static Builder builder() {
@@ -89,7 +90,7 @@ public final class StructureDefinition {
 
     public static final class Builder {
 
-        private final Map<BlockPos, Set<Block>> blocks = new LinkedHashMap<>();
+        private final Map<BlockPos, Set<Supplier<Block>>> blocks = new LinkedHashMap<>();
         private final Set<BlockPos> optionalPositions = new HashSet<>();
 
         private Builder() {}
@@ -97,19 +98,40 @@ public final class StructureDefinition {
         /**
          * Adds a required block at a relative position.
          */
-        public Builder add(int x, int y, int z, Block block) {
+        public Builder add(int x, int y, int z, Supplier<Block> block) {
             return add(new BlockPos(x, y, z), block);
         }
 
         /**
          * Adds a required block at a relative position.
          */
-        public Builder add(BlockPos pos, Block block) {
+        public Builder add(BlockPos pos, Supplier<Block> block) {
             Objects.requireNonNull(block, "Block cannot be null");
 
             BlockPos key = pos.immutable();
 
             blocks.put(key, new LinkedHashSet<>(Set.of(block)));
+            optionalPositions.remove(key);
+
+            return this;
+        }
+
+        /**
+         * Removes a required block at a relative position.
+         */
+        public Builder remove(int x, int y, int z) {
+
+            return remove(new BlockPos(x,y,z));
+        }
+
+        /**
+         * Removes a required block at a relative position.
+         */
+        public Builder remove(BlockPos pos) {
+
+            BlockPos key = pos.immutable();
+
+            blocks.remove(key);
             optionalPositions.remove(key);
 
             return this;
@@ -123,7 +145,7 @@ public final class StructureDefinition {
                 int x,
                 int y,
                 int z,
-                Block... allowedBlocks
+                Supplier<Block>... allowedBlocks
         ) {
             return add(new BlockPos(x, y, z), allowedBlocks);
         }
@@ -131,7 +153,7 @@ public final class StructureDefinition {
         /**
          * Adds multiple accepted blocks at a position.
          */
-        public Builder add(BlockPos pos, Block... allowedBlocks) {
+        public Builder add(BlockPos pos, Supplier<Block>... allowedBlocks) {
             Objects.requireNonNull(allowedBlocks, "Blocks cannot be null");
 
             if (allowedBlocks.length == 0) {
@@ -142,9 +164,9 @@ public final class StructureDefinition {
 
             BlockPos key = pos.immutable();
 
-            Set<Block> accepted = new LinkedHashSet<>();
+            Set<Supplier<Block>> accepted = new LinkedHashSet<>();
 
-            for (Block block : allowedBlocks) {
+            for (Supplier<Block> block : allowedBlocks) {
                 accepted.add(Objects.requireNonNull(block));
             }
 
@@ -164,7 +186,7 @@ public final class StructureDefinition {
                 int x,
                 int y,
                 int z,
-                Block... allowedBlocks
+                Supplier<Block>... allowedBlocks
         ) {
             return addOptional(
                     new BlockPos(x, y, z),
@@ -177,7 +199,7 @@ public final class StructureDefinition {
          */
         public Builder addOptional(
                 BlockPos pos,
-                Block... allowedBlocks
+                Supplier<Block>... allowedBlocks
         ) {
             add(pos, allowedBlocks);
             optionalPositions.add(pos.immutable());
@@ -193,7 +215,7 @@ public final class StructureDefinition {
         public Builder fill(
                 int minX, int minY, int minZ,
                 int maxX, int maxY, int maxZ,
-                Block block
+                Supplier<Block> block
         ) {
             Objects.requireNonNull(block, "Block cannot be null");
 
@@ -214,7 +236,7 @@ public final class StructureDefinition {
         public Builder fill(
                 int minX, int minY, int minZ,
                 int maxX, int maxY, int maxZ,
-                Block... allowedBlocks
+                Supplier<Block>... allowedBlocks
         ) {
             for (int x = minX; x <= maxX; x++) {
                 for (int y = minY; y <= maxY; y++) {

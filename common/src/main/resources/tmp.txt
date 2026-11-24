@@ -1,0 +1,29 @@
+Folder PATH listing for volume Data
+Volume serial number is 4EDF-CEE6
+D:.
++---assets
+¦   +---alchemy
+¦       +---blockstates
+¦       +---lang
+¦       +---models
+¦       ¦   +---block
+¦       ¦   +---item
+¦       +---textures
+¦           +---block
+¦           +---gui
+¦           +---item
++---data
+    +---alchemy
+    ¦   +---loot_tables
+    ¦   ¦   +---blocks
+    ¦   +---tags
+    ¦       +---fluids
+    +---c
+    ¦   +---tags
+    ¦       +---blocks
+    ¦           +---raw_blocks
+    +---minecraft
+        +---tags
+            +---blocks
+            ¦   +---mineable
+            +---fluid

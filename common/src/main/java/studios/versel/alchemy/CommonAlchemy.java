@@ -2,8 +2,12 @@ package studios.versel.alchemy;
 
 import studios.versel.alchemy.block.ModBlocks;
 import studios.versel.alchemy.block.entity.ModBlockEntities;
+import studios.versel.alchemy.creative.ModCreativeTabs;
+import studios.versel.alchemy.fluid.ModFluids;
 import studios.versel.alchemy.item.ModItems;
 import studios.versel.alchemy.menu.ModMenus;
+import studios.versel.alchemy.multiblock.AlchemyStructure;
+import studios.versel.alchemy.multiblock.FoundryStructure;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -16,9 +20,15 @@ public class CommonAlchemy {
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
 
+        ModFluids.register();
         ModBlocks.register();
         ModItems.register();
         ModBlockEntities.register();
         ModMenus.register();
+        ModCreativeTabs.register();
+
+        // register multiblock structures
+        AlchemyStructure.register();
+        FoundryStructure.register();
     }
 }

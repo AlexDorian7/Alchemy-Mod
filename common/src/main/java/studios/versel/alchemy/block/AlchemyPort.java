@@ -20,8 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import studios.versel.alchemy.block.entity.AlchemyPortEntity;
 import studios.versel.alchemy.block.states.ModBlockProperties;
 import studios.versel.alchemy.multiblock.AlchemyStructure;
+import studios.versel.alchemy.multiblock.MultiblockManager;
 
-public class AlchemyPort extends BaseEntityBlock {
+public class AlchemyPort extends MultiblockEntityBlock {
     public AlchemyPort(Properties properties) {
         super(properties);
 
@@ -37,70 +38,10 @@ public class AlchemyPort extends BaseEntityBlock {
         return CODEC;
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(ModBlockProperties.COMPLETED);
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(ModBlockProperties.COMPLETED, false);
-    }
-
-    @Override
-    public void onPlace(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            BlockState oldState,
-            boolean movedByPiston
-    ) {
-        super.onPlace(state, level, pos, oldState, movedByPiston);
-
-        if (!oldState.is(this)) {
-            AlchemyStructure.updateAround(level, pos);
-        }
-    }
-
-    @Override
-    protected void neighborChanged(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Block neighborBlock,
-            BlockPos neighborPos,
-            boolean movedByPiston
-    ) {
-        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-
-        AlchemyStructure.updateAround(level, pos);
-    }
-
-    @Override
-    public void onRemove(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            BlockState newState,
-            boolean movedByPiston
-    ) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
-
-        if (!newState.is(this)) {
-            AlchemyStructure.updateAround(level, pos);
-        }
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new AlchemyPortEntity(pos, state);
-    }
-
-    @Override
-    protected @NotNull RenderShape getRenderShape(BlockState state) {
-        return state.getValue(ModBlockProperties.COMPLETED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
     }
 
     @Override

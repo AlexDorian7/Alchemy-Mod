@@ -36,6 +36,31 @@ public class FluidSpriteHelperImpl {
         return sprites[0];
     }
 
+    public static TextureAtlasSprite getFlowSprite(Fluid fluid) {
+        if (fluid == null || fluid == Fluids.EMPTY) {
+            return null;
+        }
+
+        FluidRenderHandler handler =
+                FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+
+        if (handler == null) {
+            return null;
+        }
+
+        TextureAtlasSprite[] sprites = handler.getFluidSprites(
+                Minecraft.getInstance().level,
+                BlockPos.ZERO,
+                fluid.defaultFluidState()
+        );
+
+        if (sprites == null || sprites.length == 0) {
+            return null;
+        }
+
+        return sprites[1];
+    }
+
     public static int getTintColor(
             Fluid fluid,
             BlockAndTintGetter level,

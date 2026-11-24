@@ -1,5 +1,27 @@
 {
+    "itemGroup.alchemy": "Alchemy",
+    "itemGroup.alchemy_fluids": "Alchemy Fluids",
     "block.alchemy.alchemy_table": "Alchemy Table",
     "block.alchemy.alchemy_block": "Alchemy Casing",
-    "block.alchemy.alchemy_port": "Alchemy Table Port"
+    "block.alchemy.alchemy_port": "Alchemy Table Port",
+    "block.alchemy.foundry": "Foundry",
+    "block.alchemy.foundry_bricks": "Foundry Bricks",
+    "block.alchemy.foundry_port": "Foundry Port",
+    "block.alchemy.raw_mithril_block": "Block of Raw Mithril",
+    "block.alchemy.mithril_ore": "Mithril Ore",
+    "block.alchemy.deepslate_mithril_ore": "Deepslate Mithril Ore",
+    "block.alchemy.molten_mithril": "Molten Mithril",
+    "block.alchemy.molten_iron": "Molten Iron",
+    "block.alchemy.molten_copper": "Molten Copper",
+    "block.alchemy.molten_gold": "Molten Gold",
+    "fluid.alchemy.molten_mithril": "Molten Mithril",
+    "fluid.alchemy.molten_iron": "Molten Iron",
+    "fluid.alchemy.molten_copper": "Molten Copper",
+    "fluid.alchemy.molten_gold": "Molten Gold",
+    "item.alchemy.molten_mithril_bucket": "Bucket of Molten Mithril",
+    "item.alchemy.molten_iron_bucket": "Bucket of Molten Iron",
+    "item.alchemy.molten_copper_bucket": "Bucket of Molten Copper",
+    "item.alchemy.molten_gold_bucket": "Bucket of Molten Gold",
+    "item.alchemy.raw_mithril": "Raw Mithril",
+    "item.alchemy.mithril_ingot": "Mithril Ingot"
 }

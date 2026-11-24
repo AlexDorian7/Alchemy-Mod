@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "alchemy:block/raw_mithril_block" }
+    }
+}

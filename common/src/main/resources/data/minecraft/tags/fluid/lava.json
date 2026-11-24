@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "alchemy:molten_mithril",
+    "alchemy:flowing_molten_mithril",
+    "alchemy:molten_iron",
+    "alchemy:flowing_molten_iron",
+    "alchemy:molten_copper",
+    "alchemy:flowing_molten_copper",
+    "alchemy:molten_gold",
+    "alchemy:flowing_molten_gold"
+  ]
+}
